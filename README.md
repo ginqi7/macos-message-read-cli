@@ -21,3 +21,19 @@ Usage:
 
 ## Forwarding Messages to Your Mac
 To enable this feature, go to iPhone's "Settings" > "Messages" > "Text Message Forwarding" and select your Mac.
+
+## Install
+
+### By Source
+```
+git clone https://github.com/ginqi7/macos-message-read-cli.git
+cd macos-message-read-cli
+make
+```
+
+Please add the path to your PATH if you encounter a WARNING such as:
+
+```
+WARNING:  You don't have /Users/a77/.gem/ruby/3.3.0/bin in your PATH,
+          gem executables (message-read) will not run.
+```
