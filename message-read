@@ -24,7 +24,7 @@ def read(options)
 end
 
 def monitor(options)
-  listener = Listen.to(options[:directory], only: /options[:db_name]/) { read(options) }
+  listener = Listen.to(options[:directory], only: /#{options[:db_name]}/) { read(options) }
   listener.start
   sleep
 end
