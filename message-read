@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby -W0
+require 'sqlite3'
+require 'optparse'
+require 'listen'
+
+def latest(options)
+  options[:db].execute('select text from message order by date desc limit 1;') do |row|
+    return row[0]
+  end
+end
+
+def code(message)
+  numbers = message.scan(/\d+/)
+  code = numbers[0]
+  code
+end
+
+def read(options)
+  message = latest(options)
+  result = message
+  options[:code] && result = code(message)
+  options[:copy] && `echo "#{result}" | pbcopy`
+  puts result
+end
+
+def monitor(options)
+  listener = Listen.to(options[:directory], only: /options[:db_name]/) { read(options) }
+  listener.start
+  sleep
+end
+
+options = {}
+
+options[:directory] = File.expand_path('~/Library/Messages/')
+options[:db_name] = 'chat.db'
+options[:db_path] = File.join(options[:directory], options[:db_name])
+options[:db] = SQLite3::Database.new options[:db_path]
+
+parser = OptionParser.new do |opts|
+  opts.banner = 'Read your Message in MacOS.'
+  opts.separator ''
+  opts.separator 'Usage:'
+  opts.separator '    message-read [OPTIONS]'
+  opts.separator ''
+  opts.separator '    If no option is provided, the latest message will be printed.'
+  opts.separator ''
+  opts.separator '    Available Options:'
+  opts.on('--code', 'Get the CODE in the message.') do
+    options[:code] = true
+  end
+  opts.on('--copy', 'COPY the output message or code.') do
+    options[:copy] = true
+  end
+  opts.on('--monitor', 'MONITOR if the message is updated.') do
+    options[:monitor] = true
+  end
+  opts.on('--help', 'Print HELP message.') do
+    options[:help] = true
+  end
+end
+
+parser.parse!
+
+if options[:help]
+  puts parser.help # Print the help message
+elsif options[:monitor]
+  monitor(options)
+else
+  read(options)
+end
