@@ -24,6 +24,11 @@ To enable this feature, go to iPhone's "Settings" > "Messages" > "Text Message F
 
 ## Install
 
+### By Homebrew
+```
+brew install ginqi7/formulae/message-read
+```
+
 ### By Source
 ```
 git clone https://github.com/ginqi7/macos-message-read-cli.git
