@@ -10,6 +10,7 @@ def latest(options)
 end
 
 def code(message)
+  return unless message
   numbers = message.scan(/\d+/)
   code = numbers[0]
   code
@@ -19,12 +20,12 @@ def read(options)
   message = latest(options)
   result = message
   options[:code] && result = code(message)
-  options[:copy] && `echo "#{result}" | pbcopy`
+  options[:copy] && result && `echo "#{result}" | pbcopy`
   puts result
 end
 
 def monitor(options)
-  listener = Listen.to(options[:directory], only: /#{options[:db_name]}/) { read(options) }
+  listener = Listen.to(options[:directory]) { read(options) }
   listener.start
   sleep
 end
