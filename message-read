@@ -21,6 +21,7 @@ def read(options)
   result = message
   options[:code] && result = code(message)
   options[:copy] && result && `echo "#{result}" | pbcopy`
+  options[:notify] && result && `terminal-notifier -title "Message" -message "#{result}"`
   puts result
 end
 
@@ -54,6 +55,9 @@ parser = OptionParser.new do |opts|
   end
   opts.on('--monitor', 'MONITOR if the message is updated.') do
     options[:monitor] = true
+  end
+  opts.on('--notify', 'Notify if the message is updated.') do
+    options[:notify] = true
   end
   opts.on('--help', 'Print HELP message.') do
     options[:help] = true
